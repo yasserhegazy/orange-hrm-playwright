@@ -18,4 +18,4 @@ def test_add_employee_to_orangehrm(page: Page):
 
     page.get_by_role("button", name="Save").click()
     # The next page after the redirect should have the text "Personal Details" visible
-    expect(page.get_by_text("Personal Details")).to_be_visible(timeout=15000)
+    expect(page.get_by_role("heading", name="Personal Details")).to_be_visible(timeout=15000)

@@ -29,7 +29,7 @@ class AddEmployeePage:
     def fill_username(self, username: str):
         username_input = self.page.locator("div.oxd-form-row").filter(
             has_text="Username"
-        ).locator("input[type='text']")
+        ).locator("input.oxd-input")
         username_input.fill(username)
 
     def fill_password(self, password: str):

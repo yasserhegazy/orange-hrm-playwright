@@ -7,7 +7,8 @@ class EmployeeDetailsPage:
         self.header = page.get_by_role("heading", name="Personal Details")
 
     def is_displayed(self):
-        expect(self.header).to_be_visible()
+        self.page.wait_for_url("**/viewPersonalDetails/**")
+        expect(self.header).to_be_visible(timeout=10000)
 
     def get_first_name(self) -> str:
         return self.page.get_by_placeholder("First Name").input_value()

@@ -8,5 +8,23 @@ dependencies = [
     "playwright>=1.58.0",
     "pytest-playwright>=0.7.2",
 ]
+
+[dependency-groups]
+dev = [
+    "pylint>=3.3.0",
+    "pylint-pytest>=1.1.0",
+]
+
+[tool.pylint.main]
+load-plugins = ["pylint_pytest"]
+
+[tool.pylint.format]
+max-line-length = 120
+
 [tool.pylint.messages_control]
-disable = ["missing-module-docstring", "missing-function-docstring"]
+disable = [
+    "missing-module-docstring",
+    "missing-function-docstring",
+    "missing-class-docstring",
+    "too-few-public-methods",
+]

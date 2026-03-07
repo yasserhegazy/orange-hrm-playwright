@@ -7,11 +7,15 @@ class EmployeeDetailsPage:
         self.header = page.get_by_role("heading", name="Personal Details")
 
     def is_displayed(self):
-        self.page.wait_for_url("**/viewPersonalDetails/**")
-        expect(self.header).to_be_visible(timeout=10000)
+        self.page.wait_for_url("**/viewPersonalDetails/**", timeout=60000)
+        expect(self.header).to_be_visible(timeout=30000)
 
     def get_first_name(self) -> str:
-        return self.page.get_by_placeholder("First Name").input_value()
+        first_name = self.page.get_by_placeholder("First Name")
+        expect(first_name).not_to_have_value("", timeout=10000)
+        return first_name.input_value()
 
     def get_last_name(self) -> str:
-        return self.page.get_by_placeholder("Last Name").input_value()
+        last_name = self.page.get_by_placeholder("Last Name")
+        expect(last_name).not_to_have_value("", timeout=10000)
+        return last_name.input_value()

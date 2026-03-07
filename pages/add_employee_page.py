@@ -30,19 +30,14 @@ class AddEmployeePage:
         username_input = self.page.locator("div.oxd-form-row").filter(
             has_text="Username"
         ).locator("input.oxd-input")
+        expect(username_input).to_be_visible()
         username_input.fill(username)
 
     def fill_password(self, password: str):
-        password_input = self.page.locator("div.oxd-form-row").filter(
-            has_text="Password"
-        ).locator("input[type='password']").first
-        password_input.fill(password)
+        self.page.locator("input[type='password']").first.fill(password)
 
     def fill_confirm_password(self, password: str):
-        confirm_input = self.page.locator("div.oxd-form-row").filter(
-            has_text="Confirm Password"
-        ).locator("input[type='password']")
-        confirm_input.fill(password)
+        self.page.locator("input[type='password']").nth(1).fill(password)
 
     def click_save(self):
         self.save_button.click()

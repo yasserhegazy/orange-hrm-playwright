@@ -12,7 +12,7 @@ def goto(page: Page):
 
 
 @pytest.fixture()
-def logged_in_page(page: Page):
+def logged_in_page(page: Page, goto):
     """Fixture that logs in and returns the page."""
     login_page = LoginPage(page)
     login_page.login(VALID_USERNAME, VALID_PASSWORD)

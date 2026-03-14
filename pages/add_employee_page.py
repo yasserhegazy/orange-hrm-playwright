@@ -4,14 +4,13 @@ from playwright.sync_api import Page, expect
 class AddEmployeePage:
     def __init__(self, page: Page):
         self.page = page
-        self.header = page.get_by_role("heading", name="Add Employee")
         self.first_name_input = page.get_by_placeholder("First Name")
         self.middle_name_input = page.get_by_placeholder("Middle Name")
         self.last_name_input = page.get_by_placeholder("Last Name")
         self.login_details_toggle = page.locator(".oxd-switch-input")
         self.save_button = page.get_by_role("button", name="Save")
         self.password_input = page.locator("input[type='password']")
-        expect(self.header).to_be_visible()
+        expect(page.get_by_role("heading", name="Add Employee")).to_be_visible()
 
     def fill_first_name(self, name: str):
         self.first_name_input.fill(name)

@@ -1,3 +1,5 @@
+import time
+
 BASE_URL = "https://opensource-demo.orangehrmlive.com/"
 
 VALID_USERNAME = "Admin"
@@ -8,8 +10,6 @@ LOGIN_PASSWORD = "Test12345@"
 
 def generate_employee_data() -> dict:
     """Generate unique employee data for each test run."""
-    import time
-
     suffix = str(int(time.time()))[-6:]
     return {
         "first_name": f"Test{suffix}",

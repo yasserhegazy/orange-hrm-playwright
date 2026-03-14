@@ -10,8 +10,7 @@ class AddEmployeePage:
         self.last_name_input = page.get_by_placeholder("Last Name")
         self.login_details_toggle = page.locator(".oxd-switch-input")
         self.save_button = page.get_by_role("button", name="Save")
-
-    def is_displayed(self):
+        self.password_input = page.locator("input[type='password']")
         expect(self.header).to_be_visible()
 
     def fill_first_name(self, name: str):
@@ -27,17 +26,17 @@ class AddEmployeePage:
         self.login_details_toggle.click()
 
     def fill_username(self, username: str):
-        username_input = self.page.locator("div.oxd-form-row").filter(
-            has_text="Username"
-        ).locator("input.oxd-input")
+        username_input = self.page.locator(
+            ".oxd-input-group", has_text="Username"
+        ).get_by_role("textbox")
         expect(username_input).to_be_visible()
         username_input.fill(username)
 
     def fill_password(self, password: str):
-        self.page.locator("input[type='password']").first.fill(password)
+        self.password_input.first.fill(password)
 
     def fill_confirm_password(self, password: str):
-        self.page.locator("input[type='password']").nth(1).fill(password)
+        self.password_input.last.fill(password)
 
     def click_save(self):
         self.save_button.click()

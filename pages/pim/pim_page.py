@@ -8,5 +8,5 @@ class PIMPage:
         self.add_button = page.get_by_role("button", name="Add")
         expect(self.header).to_be_visible()
 
-    def click_add_employee(self):
+    def click_add_employee(self) -> None:
         self.add_button.click()

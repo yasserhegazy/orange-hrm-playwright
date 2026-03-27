@@ -35,4 +35,6 @@ def employee_list_page(created_employee: CreatedEmployee) -> EmployeeListPage:
     page = created_employee.page
     SideMenuPage(page).navigate_to_pim()
     PIMPage(page)
-    return EmployeeListPage(page)
+    employee_list = EmployeeListPage(page)
+    employee_list.wait_until_loaded()
+    return employee_list

@@ -6,5 +6,5 @@ class SideMenuPage:
         self.page = page
         self.pim_link = page.get_by_role("link", name="PIM")
 
-    def navigate_to_pim(self):
+    def navigate_to_pim(self) -> None:
         self.pim_link.click()

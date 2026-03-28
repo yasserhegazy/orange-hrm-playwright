@@ -1,5 +1,7 @@
 from playwright.sync_api import Page, expect
 
+from pages.navigation.dashboard_page import DashboardPage
+
 
 class LoginPage:
     def __init__(self, page: Page):
@@ -17,10 +19,18 @@ class LoginPage:
     def click_login(self) -> None:
         self.login_button.click()
 
-    def login(self, username: str, password: str) -> None:
+    def wait_until_loaded(self) -> None:
+        expect(self.username_input).to_be_visible()
+        expect(self.password_input).to_be_visible()
+        expect(self.login_button).to_be_visible()
+
+    def login(self, username: str, password: str) -> DashboardPage:
+        self.wait_until_loaded()
         self.fill_username(username)
         self.fill_password(password)
         self.click_login()
+
+        return DashboardPage(self.page)
 
     def get_error_message(self) -> str:
         return self.page.locator(".oxd-alert-content--error").text_content() or ""

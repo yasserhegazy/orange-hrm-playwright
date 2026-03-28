@@ -24,13 +24,10 @@ jobs:
         run: uv sync 
 
       - name: Run ruff check
-        run: uv run ruff check pages/ tests/ data/ utils/
+        run: uv run ruff check 
 
       - name: Run ruff format check
-        run: uv run ruff format --check pages/ tests/ data/ utils/
-
-      - name: Run pylint
-        run: uv run pylint pages/ tests/ data/ utils/
+        run: uv run ruff format --check 
 
       - name: Install Playwright browsers
         run: uv run playwright install

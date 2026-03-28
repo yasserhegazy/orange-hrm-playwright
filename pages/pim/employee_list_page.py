@@ -11,14 +11,14 @@ LOADING_SPINNER_SELECTOR = ".oxd-loading-spinner-container"
 class EmployeeListPage:
     def __init__(self, page: Page):
         self.page = page
-        # OrangeHRM currently lacks dedicated test IDs, so I keep scoped text selectors as a fallback.
-        self.employee_name_input = page.locator(".oxd-input-group", has_text="Employee Name").get_by_role("textbox")
-        self.employee_id_input = page.locator(".oxd-input-group", has_text="Employee Id").get_by_role("textbox")
-        self.search_button = page.get_by_role("button", name="Search")
-        self.reset_button = page.get_by_role("button", name="Reset")
-        self.no_records_text = page.locator("span.oxd-text.oxd-text--span", has_text=NO_RECORDS_TEXT)
-        self.result_count_text = page.locator("span.oxd-text", has_text=RESULT_TEXT_HINT)
-        self.loading_spinner = page.locator(LOADING_SPINNER_SELECTOR)
+        self.employee_name_input = self.page.locator(".oxd-input-group", has_text="Employee Name").get_by_role(
+            "textbox"
+        )
+        self.employee_id_input = self.page.locator(".oxd-input-group", has_text="Employee Id").get_by_role("textbox")
+        self.search_button = self.page.get_by_role("button", name="Search")
+        self.reset_button = self.page.get_by_role("button", name="Reset")
+        self.no_records_text = self.page.locator("span.oxd-text.oxd-text--span", has_text=NO_RECORDS_TEXT)
+        self.result_count_text = self.page.locator("span.oxd-text", has_text=RESULT_TEXT_HINT)
 
     def wait_until_loaded(self) -> None:
         expect(self.search_button).to_be_visible()
@@ -49,8 +49,9 @@ class EmployeeListPage:
 
     def click_search(self) -> None:
         self.search_button.click()
-        if self.loading_spinner.is_visible():
-            expect(self.loading_spinner).not_to_be_visible()
+        loading_spinner = self.page.locator(LOADING_SPINNER_SELECTOR)
+        if loading_spinner.is_visible():
+            expect(loading_spinner).not_to_be_visible()
         expect(self.result_count_text.or_(self.no_records_text)).to_be_visible()
 
     def click_reset(self) -> None:

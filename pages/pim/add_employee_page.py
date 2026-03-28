@@ -1,5 +1,7 @@
 from playwright.sync_api import Page, expect
 
+from pages.pim.employee_details_page import EmployeeDetailsPage
+
 
 class AddEmployeePage:
     def __init__(self, page: Page):
@@ -21,11 +23,11 @@ class AddEmployeePage:
     def fill_last_name(self, name: str) -> None:
         self.last_name_input.fill(name)
 
-    def add_employee(self, employee: dict[str, str]) -> None:
+    def add_employee(self, employee: dict[str, str]) -> EmployeeDetailsPage:
         self.fill_first_name(employee["first_name"])
         self.fill_middle_name(employee["middle_name"])
         self.fill_last_name(employee["last_name"])
-        self.click_save()
+        return self.click_save()
 
     def toggle_login_details(self) -> None:
         self.login_details_toggle.click()
@@ -41,7 +43,9 @@ class AddEmployeePage:
     def fill_confirm_password(self, password: str) -> None:
         self.password_input.last.fill(password)
 
-    def add_employee_with_login_details(self, employee: dict[str, str], username: str, password: str) -> None:
+    def add_employee_with_login_details(
+        self, employee: dict[str, str], username: str, password: str
+    ) -> EmployeeDetailsPage:
         self.fill_first_name(employee["first_name"])
         self.fill_middle_name(employee["middle_name"])
         self.fill_last_name(employee["last_name"])
@@ -49,10 +53,12 @@ class AddEmployeePage:
         self.fill_username(username)
         self.fill_password(password)
         self.fill_confirm_password(password)
-        self.click_save()
+        return self.click_save()
 
-    def click_save(self) -> None:
-        self.save_button.click()
+    def click_save(self) -> EmployeeDetailsPage:
+        with self.page.expect_navigation(url="**/pim/viewPersonalDetails/**"):
+            self.save_button.click()
+        return EmployeeDetailsPage(self.page)
 
     def get_employee_id(self) -> str:
         return self.page.locator(".oxd-input-group", has_text="Employee Id").get_by_role("textbox").input_value()

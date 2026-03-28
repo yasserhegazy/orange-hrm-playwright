@@ -5,6 +5,7 @@ from playwright.sync_api import Page, expect
 NO_RECORDS_TEXT = "No Records Found"
 RESULT_TEXT_HINT = "Record"
 AUTOCOMPLETE_OPTION_SELECTOR = ".oxd-autocomplete-option"
+LOADING_SPINNER_SELECTOR = ".oxd-loading-spinner-container"
 
 
 class EmployeeListPage:
@@ -17,6 +18,7 @@ class EmployeeListPage:
         self.reset_button = page.get_by_role("button", name="Reset")
         self.no_records_text = page.locator("span.oxd-text.oxd-text--span", has_text=NO_RECORDS_TEXT)
         self.result_count_text = page.locator("span.oxd-text", has_text=RESULT_TEXT_HINT)
+        self.loading_spinner = page.locator(LOADING_SPINNER_SELECTOR)
 
     def wait_until_loaded(self) -> None:
         expect(self.search_button).to_be_visible()
@@ -26,8 +28,12 @@ class EmployeeListPage:
     def search_by_name(self, name: str) -> None:
         self.employee_name_input.fill(name)
         autocomplete_options = self.page.locator(AUTOCOMPLETE_OPTION_SELECTOR)
-        expect(autocomplete_options.first).to_be_visible(timeout=5000)
+        expect(autocomplete_options.first).to_be_visible()
         autocomplete_options.first.click()
+        self.click_search()
+
+    def search_by_name_raw(self, name: str) -> None:
+        self.employee_name_input.fill(name)
         self.click_search()
 
     def search_by_id(self, employee_id: str) -> None:
@@ -43,13 +49,16 @@ class EmployeeListPage:
 
     def click_search(self) -> None:
         self.search_button.click()
+        if self.loading_spinner.is_visible():
+            expect(self.loading_spinner).not_to_be_visible()
         expect(self.result_count_text.or_(self.no_records_text)).to_be_visible()
 
     def click_reset(self) -> None:
         self.reset_button.click()
 
     def has_no_records(self) -> bool:
-        return self.no_records_text.is_visible()
+        info_toast = self.page.locator(".oxd-toast-content-text", has_text=NO_RECORDS_TEXT)
+        return self.no_records_text.is_visible() or info_toast.is_visible()
 
     def get_result_count(self) -> int:
         """Parse result count from badge text."""

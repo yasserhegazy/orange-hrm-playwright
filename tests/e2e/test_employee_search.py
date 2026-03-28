@@ -33,7 +33,7 @@ class TestEmployeeSearchByName:
         invalid_name: str,
     ):
         """Negative: non-existent name shows No Records Found."""
-        employee_list_page.search_by_name(invalid_name)
+        employee_list_page.search_by_name_raw(invalid_name)
         assert employee_list_page.has_no_records()
 
 

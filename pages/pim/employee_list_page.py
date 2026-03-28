@@ -50,15 +50,19 @@ class EmployeeListPage:
     def click_search(self) -> None:
         self.search_button.click()
         loading_spinner = self.page.locator(LOADING_SPINNER_SELECTOR)
-        if loading_spinner.is_visible():
-            expect(loading_spinner).not_to_be_visible()
-        expect(self.result_count_text.or_(self.no_records_text)).to_be_visible()
+        if loading_spinner.is_visible(timeout=2000):
+            expect(loading_spinner).not_to_be_visible(timeout=15000)
+        final_state = self.result_count_text.or_(self.no_records_text)
+        expect(final_state.first).to_be_visible(timeout=10000)
 
     def click_reset(self) -> None:
         self.reset_button.click()
 
     def has_no_records(self) -> bool:
         info_toast = self.page.locator(".oxd-toast-content-text", has_text=NO_RECORDS_TEXT)
+        if info_toast.is_visible(timeout=2000):
+            return True
+        expect(self.result_count_text.or_(self.no_records_text).first).to_be_visible(timeout=10000)
         return self.no_records_text.is_visible() or info_toast.is_visible()
 
     def get_result_count(self) -> int:

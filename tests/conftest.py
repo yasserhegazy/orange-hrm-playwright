@@ -5,9 +5,14 @@ from data.constants import BASE_URL
 from data.models import CreatedEmployee
 from pages.navigation.side_menu_page import SideMenuPage
 from pages.pim.employee_list_page import EmployeeListPage
+from pages.recruitment.vacancy_list_page import VacancyListPage
 from tests.plugins.employee import create_employee, login_as_admin
 
-pytest_plugins = ["tests.plugins.allure_reporting"]
+pytest_plugins = [
+    "tests.plugins.allure_reporting",
+    "tests.plugins.employee_cleanup",
+    "tests.plugins.vacancy_cleanup",
+]
 
 
 @pytest.fixture(autouse=True)
@@ -38,3 +43,9 @@ def employee_list_page(logged_in_page: Page) -> EmployeeListPage:
 def employee_list_page_with_employee(created_employee: CreatedEmployee) -> EmployeeListPage:
     """Navigate to PIM Employee List after creating an employee."""
     return SideMenuPage(created_employee.page).navigate_to_pim().navigate_to_employee_list_page()
+
+
+@pytest.fixture
+def vacancy_list_page(logged_in_page: Page) -> VacancyListPage:
+    """Navigate to Recruitment Vacancies and return its page object."""
+    return SideMenuPage(logged_in_page).navigate_to_recruitment().navigate_to_vacancies()

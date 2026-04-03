@@ -29,14 +29,8 @@ def vacancy_cleanup(logged_in_page: Page):
     if not tracker.vacancy_names:
         return
 
-    try:
-        vacancy_list_page = SideMenuPage(logged_in_page).navigate_to_recruitment().navigate_to_vacancies()
-        for vacancy_name in tracker.vacancy_names:
-            try:
-                vacancy_list_page.delete_vacancy_by_name(vacancy_name)
-            except Exception:
-                pass
-    except Exception:
-        pass
+    vacancy_list_page = SideMenuPage(logged_in_page).navigate_to_recruitment().navigate_to_vacancies()
+    for vacancy_name in tracker.vacancy_names:
+        vacancy_list_page.delete_vacancy_by_name(vacancy_name)
 
     tracker.clear()

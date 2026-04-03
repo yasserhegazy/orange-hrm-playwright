@@ -15,6 +15,5 @@ class RecruitmentPage:
     @pw_trace()
     def navigate_to_vacancies(self) -> VacancyListPage:
         self.vacancies_tab.click()
-        from pages.recruitment.vacancy_list_page import VacancyListPage
 
         return VacancyListPage(self.page)

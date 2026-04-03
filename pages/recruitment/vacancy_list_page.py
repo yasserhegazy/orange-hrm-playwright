@@ -28,7 +28,6 @@ class VacancyListPage:
         return self.result_rows.count()
 
     def has_vacancy(self, vacancy_name: str) -> bool:
-        self.page.wait_for_timeout(1000)  # Wait for table to settle
         return self.result_rows.filter(has_text=vacancy_name).count() > 0
 
     @pw_trace("Delete Vacancy by Name")
@@ -45,5 +44,4 @@ class VacancyListPage:
         expect(self.delete_confirmation_button).to_be_visible()
         self.delete_confirmation_button.click()
 
-        self.page.wait_for_load_state("networkidle", timeout=10000)
         return True

@@ -25,10 +25,11 @@ class TestVacancyCreation:
         self,
         vacancy_list_page: VacancyListPage,
         vacancy_cleanup: VacancyCleanupTracker,
+        hiring_manager: str,
         job_title: str,
         status: VacancyStatus,
     ):
-        vacancy_data = generate_vacancy_data(job_title=job_title, status=status)
+        vacancy_data = generate_vacancy_data(job_title=job_title, hiring_manager=hiring_manager, status=status)
         vacancy_cleanup.register(vacancy_data.vacancy_name)
 
         add_vacancy_page = vacancy_list_page.click_add_vacancy()

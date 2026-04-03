@@ -1,13 +1,12 @@
 import time
 
-from data.constants import DEFAULT_HIRING_MANAGER
 from data.models import VacancyData, VacancyStatus
 
 
 def generate_vacancy_data(
     job_title: str,
+    hiring_manager: str,
     status: VacancyStatus = VacancyStatus.ACTIVE,
-    hiring_manager: str = DEFAULT_HIRING_MANAGER,
     num_positions: int = 1,
 ) -> VacancyData:
     unique_seed = str(time.time_ns())

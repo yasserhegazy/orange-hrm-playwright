@@ -16,7 +16,7 @@ class AddVacancyPage:
         self.num_positions_input = page.locator(".oxd-input-group", has_text="Number of Positions").get_by_role(
             "textbox"
         )
-        self.status_toggle = page.locator(".oxd-switch-wrapper").filter(has_text="Active").locator(".oxd-switch-input")
+        self.status_toggle = page.locator(".oxd-switch-input").first
         self.save_button = page.get_by_role("button", name="Save")
         self.autocomplete_dropdown = page.locator(".oxd-autocomplete-dropdown")
         expect(self.header).to_be_visible()

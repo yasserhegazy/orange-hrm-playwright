@@ -7,8 +7,9 @@ from pages.recruitment.recruitment_page import RecruitmentPage
 class SideMenuPage:
     def __init__(self, page: Page):
         self.page = page
-        self.pim_link = page.get_by_role("link", name="PIM")
-        self.recruitment_link = page.get_by_role("link", name="Recruitment")
+        self.sidebar = page.locator(".oxd-sidepanel")
+        self.pim_link = self.sidebar.get_by_role("link", name="PIM")
+        self.recruitment_link = self.sidebar.get_by_role("link", name="Recruitment")
 
     def navigate_to_pim(self) -> PIMPage:
         self.pim_link.click()

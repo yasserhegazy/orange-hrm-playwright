@@ -5,8 +5,38 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
+    "allure-pytest>=2.15.3",
     "playwright>=1.58.0",
     "pytest-playwright>=0.7.2",
+    "ruff>=0.15.6",
 ]
+
+[dependency-groups]
+dev = [
+    "pre-commit>=4.5.1",
+    "pylint>=3.3.0",
+    "pylint-pytest>=1.1.0",
+]
+
+[tool.pytest.ini_options]
+addopts = "--alluredir=allure-results"
+
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "PT"]
+
+[tool.pylint.main]
+load-plugins = ["pylint_pytest"]
+
+[tool.pylint.format]
+max-line-length = 120
+
 [tool.pylint.messages_control]
-disable = ["missing-module-docstring", "missing-function-docstring"]
+disable = [
+    "missing-module-docstring",
+    "missing-function-docstring",
+    "missing-class-docstring",
+    "too-few-public-methods",
+]

@@ -7,7 +7,6 @@ from pages.navigation.side_menu_page import SideMenuPage
 from pages.pim.employee_list_page import EmployeeListPage
 from pages.recruitment.vacancy_list_page import VacancyListPage
 from tests.plugins.employee import create_employee, login_as_admin
-from tests.plugins.employee_cleanup import EmployeeCleanupTracker
 
 pytest_plugins = [
     "tests.plugins.allure_reporting",
@@ -35,7 +34,7 @@ def created_employee(logged_in_page: Page) -> CreatedEmployee:
 
 
 @pytest.fixture
-def hiring_manager(logged_in_page: Page, employee_cleanup: EmployeeCleanupTracker) -> str:
+def hiring_manager(logged_in_page: Page, employee_cleanup) -> str:
     hiring_manager_employee = create_employee(logged_in_page)
     employee_cleanup.register(hiring_manager_employee.employee_id)
     return hiring_manager_employee.first_name

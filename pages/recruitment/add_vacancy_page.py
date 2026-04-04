@@ -54,7 +54,7 @@ class AddVacancyPage:
 
     def click_save(self) -> None:
         self.save_button.click()
-        expect(self.page).to_have_url(re.compile(r".*/addJobVacancy/\d+$"), timeout=15000)
+        expect(self.page).to_have_url(re.compile(r".*/addJobVacancy/\d+$"))
 
     @pw_trace("Create Vacancy")
     def create_vacancy(self, vacancy_data: VacancyData) -> None:

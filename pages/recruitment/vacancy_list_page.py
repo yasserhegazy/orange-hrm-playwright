@@ -16,7 +16,13 @@ class VacancyListPage:
         self.result_rows = page.locator(RESULT_ROW_SELECTOR)
         self.no_records_text = page.locator("span.oxd-text.oxd-text--span", has_text=NO_RECORDS_TEXT)
         self.delete_confirmation_button = page.locator(DELETE_CONFIRMATION_BUTTON)
+        self.wait_until_loaded()
+
+    def wait_until_loaded(self) -> VacancyListPage:
+        """Wait for the vacancy list page to be fully loaded."""
         expect(self.header).to_be_visible()
+        expect(self.result_rows.first.or_(self.no_records_text)).to_be_visible()
+        return self
 
     @pw_trace()
     def click_add_vacancy(self) -> AddVacancyPage:
@@ -27,8 +33,17 @@ class VacancyListPage:
     def get_result_count(self) -> int:
         return self.result_rows.count()
 
-    def has_vacancy(self, vacancy_name: str) -> bool:
-        return self.result_rows.filter(has_text=vacancy_name).count() > 0
+    def has_vacancy(self, vacancy_name: str, timeout: int = 10000) -> bool:
+        """Check if a vacancy with the given name exists in the list.
+
+        Waits for the vacancy to appear before returning.
+        """
+        vacancy_row = self.result_rows.filter(has_text=vacancy_name)
+        try:
+            expect(vacancy_row.first).to_be_visible(timeout=timeout)
+            return True
+        except AssertionError:
+            return False
 
     @pw_trace("Delete Vacancy by Name")
     def delete_vacancy_by_name(self, vacancy_name: str) -> bool:

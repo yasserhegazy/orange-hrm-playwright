@@ -18,7 +18,7 @@ pytest_plugins = [
 @pytest.fixture(autouse=True)
 def goto(page: Page):
     """Fixture to navigate to the base URL."""
-    page.goto(BASE_URL)
+    page.goto(BASE_URL, wait_until="domcontentloaded", timeout=60000)
 
 
 @pytest.fixture

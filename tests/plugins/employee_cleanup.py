@@ -29,8 +29,11 @@ def employee_cleanup(logged_in_page: Page):
     if not tracker.employee_ids:
         return
 
-    employee_list_page = SideMenuPage(logged_in_page).navigate_to_pim().navigate_to_employee_list_page()
-    for employee_id in tracker.employee_ids:
-        employee_list_page.delete_employee_by_id(employee_id)
-
-    tracker.clear()
+    try:
+        employee_list_page = SideMenuPage(logged_in_page).navigate_to_pim().navigate_to_employee_list_page()
+        for employee_id in tracker.employee_ids:
+            employee_list_page.delete_employee_by_id(employee_id)
+    except Exception:
+        pass
+    finally:
+        tracker.clear()

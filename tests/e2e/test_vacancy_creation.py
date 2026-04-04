@@ -12,12 +12,12 @@ class TestVacancyCreation:
         ("job_title", "status"),
         [
             ("QA Lead", VacancyStatus.ACTIVE),
-            ("Account Assistant", VacancyStatus.INACTIVE),
+            ("Software Engineer", VacancyStatus.INACTIVE),
             ("Chief Executive Officer", VacancyStatus.ACTIVE),
         ],
         ids=[
             "active_qa_lead",
-            "inactive_account_assistant",
+            "inactive_software_engineer",
             "active_ceo",
         ],
     )

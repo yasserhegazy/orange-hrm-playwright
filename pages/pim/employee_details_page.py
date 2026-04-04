@@ -5,7 +5,7 @@ class EmployeeDetailsPage:
     def __init__(self, page: Page):
         self.page = page
         self.header = page.get_by_role("heading", name="Personal Details")
-        expect(self.header).to_be_visible()
+        expect(self.header).to_be_visible(timeout=30000)
 
     def get_first_name(self) -> str:
         first_name = self.page.get_by_placeholder("First Name")

@@ -10,7 +10,7 @@ class RecruitmentPage:
         self.header = page.get_by_role("heading", name="Recruitment")
         self.vacancies_tab = page.get_by_role("link", name="Vacancies")
         self.candidates_tab = page.get_by_role("link", name="Candidates")
-        expect(self.header).to_be_visible()
+        expect(self.header).to_be_visible(timeout=10000)
 
     @pw_trace()
     def navigate_to_vacancies(self) -> VacancyListPage:

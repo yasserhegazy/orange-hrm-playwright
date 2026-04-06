@@ -13,10 +13,12 @@ class SideMenuPage:
 
     def navigate_to_pim(self) -> PIMPage:
         self.pim_link.click()
+        self.page.wait_for_url("**/pim/**", timeout=10000)
 
         return PIMPage(self.page)
 
     def navigate_to_recruitment(self) -> RecruitmentPage:
         self.recruitment_link.click()
+        self.page.wait_for_url("**/recruitment/**", timeout=10000)
 
         return RecruitmentPage(self.page)

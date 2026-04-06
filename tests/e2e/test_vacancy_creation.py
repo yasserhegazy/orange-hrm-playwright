@@ -3,7 +3,6 @@ import pytest
 from data.models import VacancyStatus
 from pages.navigation.side_menu_page import SideMenuPage
 from pages.recruitment.vacancy_list_page import VacancyListPage
-from tests.plugins.vacancy_cleanup import VacancyCleanupTracker
 from tests.utils.generate_vacancy_data import generate_vacancy_data
 
 
@@ -24,13 +23,13 @@ class TestVacancyCreation:
     def test_create_vacancy(
         self,
         vacancy_list_page: VacancyListPage,
-        vacancy_cleanup: VacancyCleanupTracker,
+        vacancy_cleanup: list[str],
         hiring_manager: str,
         job_title: str,
         status: VacancyStatus,
     ):
         vacancy_data = generate_vacancy_data(job_title=job_title, hiring_manager=hiring_manager, status=status)
-        vacancy_cleanup.register(vacancy_data.vacancy_name)
+        vacancy_cleanup.append(vacancy_data.vacancy_name)
 
         vacancy_list = SideMenuPage(vacancy_list_page.page).navigate_to_recruitment().navigate_to_vacancies()
         add_vacancy_page = vacancy_list.click_add_vacancy()

@@ -1,3 +1,5 @@
+from collections.abc import Generator
+
 import pytest
 from playwright.sync_api import Page
 
@@ -10,7 +12,6 @@ from tests.plugins.employee import create_employee, login_as_admin
 
 pytest_plugins = [
     "tests.plugins.allure_reporting",
-    "tests.plugins.employee_cleanup",
     "tests.plugins.vacancy_cleanup",
 ]
 
@@ -28,16 +29,27 @@ def logged_in_page(page: Page):
 
 
 @pytest.fixture
-def created_employee(logged_in_page: Page) -> CreatedEmployee:
-    """Create an employee and return its details for search tests."""
-    return create_employee(logged_in_page)
+def created_employee(logged_in_page: Page) -> Generator[CreatedEmployee]:
+    """Create an employee, yield its details, and delete it after the test."""
+    employee = create_employee(logged_in_page)
+    yield employee
+    try:
+        employee_list_page = SideMenuPage(logged_in_page).navigate_to_pim().navigate_to_employee_list_page()
+        employee_list_page.delete_employee_by_id(employee.employee_id)
+    except Exception:
+        pass
 
 
 @pytest.fixture
-def hiring_manager(logged_in_page: Page, employee_cleanup) -> str:
+def hiring_manager(logged_in_page: Page) -> Generator[str]:
+    """Create an employee to serve as hiring manager, yield the name, and clean up after."""
     hiring_manager_employee = create_employee(logged_in_page)
-    employee_cleanup.register(hiring_manager_employee.employee_id)
-    return hiring_manager_employee.first_name
+    yield hiring_manager_employee.first_name
+    try:
+        employee_list_page = SideMenuPage(logged_in_page).navigate_to_pim().navigate_to_employee_list_page()
+        employee_list_page.delete_employee_by_id(hiring_manager_employee.employee_id)
+    except Exception:
+        pass
 
 
 @pytest.fixture

@@ -1,42 +1,27 @@
+from collections.abc import Generator
+
 import pytest
 from playwright.sync_api import Page
 
 from pages.navigation.side_menu_page import SideMenuPage
 
 
-class VacancyCleanupTracker:
-    def __init__(self):
-        self._vacancy_names: list[str] = []
-
-    def register(self, vacancy_name: str) -> None:
-        if vacancy_name and vacancy_name not in self._vacancy_names:
-            self._vacancy_names.append(vacancy_name)
-
-    @property
-    def vacancy_names(self) -> list[str]:
-        return self._vacancy_names.copy()
-
-    def clear(self) -> None:
-        self._vacancy_names.clear()
-
-
 @pytest.fixture
-def vacancy_cleanup(logged_in_page: Page):
-    tracker = VacancyCleanupTracker()
+def vacancy_cleanup(logged_in_page: Page) -> Generator[list[str]]:
+    """Yield a list that tests append vacancy names to. Deletes all tracked vacancies after the test."""
+    created_vacancy_names: list[str] = []
 
-    yield tracker
+    yield created_vacancy_names
+
+    if not created_vacancy_names:
+        return
 
     try:
-        if not tracker.vacancy_names:
-            return
-
         vacancy_list_page = SideMenuPage(logged_in_page).navigate_to_recruitment().navigate_to_vacancies()
-        for vacancy_name in tracker.vacancy_names:
+        for name in created_vacancy_names:
             try:
-                vacancy_list_page.delete_vacancy_by_name(vacancy_name)
+                vacancy_list_page.delete_vacancy_by_name(name)
             except Exception:
                 pass
     except Exception:
         pass
-    finally:
-        tracker.clear()

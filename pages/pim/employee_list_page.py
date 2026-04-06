@@ -1,9 +1,11 @@
 from playwright.sync_api import Page, expect
 
+from utils.tracing import pw_trace
+
 NO_RECORDS_TEXT = "No Records Found"
 AUTOCOMPLETE_OPTION_SELECTOR = ".oxd-autocomplete-option"
-LOADING_SPINNER_SELECTOR = ".oxd-loading-spinner-container"
 RESULT_ROW_SELECTOR = "div.oxd-table-card"
+DELETE_CONFIRMATION_BUTTON = "button.oxd-button--label-danger"
 
 
 class EmployeeListPage:
@@ -17,6 +19,7 @@ class EmployeeListPage:
         self.reset_button = self.page.get_by_role("button", name="Reset")
         self.no_records_text = self.page.locator("span.oxd-text.oxd-text--span", has_text=NO_RECORDS_TEXT)
         self.result_rows = self.page.locator(RESULT_ROW_SELECTOR)
+        self.delete_confirmation_button = self.page.locator(DELETE_CONFIRMATION_BUTTON)
         self.wait_until_loaded()
 
     def wait_until_loaded(self) -> None:
@@ -24,6 +27,7 @@ class EmployeeListPage:
         expect(self.employee_name_input).to_be_visible()
         expect(self.employee_id_input).to_be_visible()
 
+    @pw_trace()
     def search_by_name(self, name: str) -> None:
         self.employee_name_input.fill(name)
         autocomplete_options = self.page.locator(AUTOCOMPLETE_OPTION_SELECTOR)
@@ -31,10 +35,12 @@ class EmployeeListPage:
         autocomplete_options.first.click()
         self.click_search()
 
+    @pw_trace()
     def search_by_name_raw(self, name: str) -> None:
         self.employee_name_input.fill(name)
         self.click_search()
 
+    @pw_trace()
     def search_by_id(self, employee_id: str) -> None:
         self.employee_id_input.fill(employee_id)
         self.click_search()
@@ -55,3 +61,22 @@ class EmployeeListPage:
 
     def has_result_row(self, expected_text: str) -> bool:
         return self.result_rows.filter(has_text=expected_text).count() > 0
+
+    @pw_trace("Delete Employee by ID")
+    def delete_employee_by_id(self, employee_id: str) -> bool:
+        self.click_reset()
+        self.search_by_id(employee_id)
+
+        if self.has_no_records():
+            return False
+
+        row = self.result_rows.filter(has_text=employee_id).first
+        delete_button = row.locator("button i.bi-trash")
+        expect(delete_button).to_be_visible()
+        delete_button.click()
+
+        expect(self.delete_confirmation_button).to_be_visible()
+        self.delete_confirmation_button.click()
+
+        self.page.wait_for_load_state("networkidle", timeout=10000)
+        return True

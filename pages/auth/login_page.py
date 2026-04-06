@@ -1,3 +1,5 @@
+import re
+
 from playwright.sync_api import Page, expect
 
 from pages.navigation.dashboard_page import DashboardPage
@@ -18,9 +20,11 @@ class LoginPage:
 
     def click_login(self) -> None:
         self.login_button.click()
+        # Wait for navigation to dashboard to complete
+        expect(self.page).to_have_url(re.compile(r".*/dashboard"), timeout=30000)
 
     def wait_until_loaded(self) -> None:
-        expect(self.username_input).to_be_visible()
+        expect(self.username_input).to_be_visible(timeout=15000)
         expect(self.password_input).to_be_visible()
         expect(self.login_button).to_be_visible()
 

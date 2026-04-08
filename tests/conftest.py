@@ -3,7 +3,6 @@ from collections.abc import Generator
 import pytest
 from playwright.sync_api import Page
 
-from data.constants import BASE_URL
 from data.models import CreatedEmployee
 from pages.navigation.side_menu_page import SideMenuPage
 from pages.pim.employee_list_page import EmployeeListPage
@@ -17,9 +16,9 @@ pytest_plugins = [
 
 
 @pytest.fixture(autouse=True)
-def goto(page: Page):
+def goto(page: Page, base_url: str):
     """Fixture to navigate to the base URL."""
-    page.goto(BASE_URL, wait_until="domcontentloaded", timeout=60000)
+    page.goto(base_url, wait_until="domcontentloaded", timeout=60000)
 
 
 @pytest.fixture

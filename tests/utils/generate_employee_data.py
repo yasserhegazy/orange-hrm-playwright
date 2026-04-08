@@ -1,12 +1,10 @@
-import time
+from tests.utils.faker_instance import fake
 
 
 def generate_employee_data() -> dict[str, str]:
     """Generate unique employee data for each test run."""
-    unique_seed = str(time.time_ns())
-    suffix = unique_seed[-6:]
     return {
-        "first_name": f"Test{suffix}",
-        "middle_name": "Auto",
-        "last_name": f"User{suffix}",
+        "first_name": f"{fake.first_name()}",
+        "middle_name": fake.first_name(),
+        "last_name": f"{fake.last_name()}",
     }

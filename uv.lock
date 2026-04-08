@@ -224,6 +224,7 @@ dependencies = [
     { name = "allure-pytest" },
     { name = "faker" },
     { name = "playwright" },
+    { name = "pytest-base-url" },
     { name = "pytest-playwright" },
     { name = "ruff" },
 ]
@@ -240,6 +241,7 @@ requires-dist = [
     { name = "allure-pytest", specifier = ">=2.15.3" },
     { name = "faker", specifier = ">=40.13.0" },
     { name = "playwright", specifier = ">=1.58.0" },
+    { name = "pytest-base-url", specifier = ">=2.1.0" },
     { name = "pytest-playwright", specifier = ">=0.7.2" },
     { name = "ruff", specifier = ">=0.15.6" },
 ]

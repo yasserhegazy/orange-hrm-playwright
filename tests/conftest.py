@@ -3,15 +3,18 @@ from collections.abc import Generator
 import pytest
 from playwright.sync_api import Page
 
-from data.models import CreatedEmployee
+from data.models import CreatedEmployee, VacancyStatus
 from pages.navigation.side_menu_page import SideMenuPage
 from pages.pim.employee_list_page import EmployeeListPage
+from pages.recruitment.candidate_list_page import CandidateListPage
 from pages.recruitment.vacancy_list_page import VacancyListPage
 from tests.plugins.employee import create_employee, login_as_admin
+from tests.utils.generate_vacancy_data import generate_vacancy_data
 
 pytest_plugins = [
     "tests.plugins.allure_reporting",
     "tests.plugins.vacancy_cleanup",
+    "tests.plugins.candidate_cleanup",
 ]
 
 
@@ -67,3 +70,31 @@ def employee_list_page_with_employee(created_employee: CreatedEmployee) -> Emplo
 def vacancy_list_page(logged_in_page: Page) -> VacancyListPage:
     """Navigate to Recruitment Vacancies and return its page object."""
     return SideMenuPage(logged_in_page).navigate_to_recruitment().navigate_to_vacancies()
+
+
+@pytest.fixture
+def vacancy_for_recruitment(
+    logged_in_page: Page,
+    hiring_manager: str,
+    vacancy_cleanup: list[str],
+) -> str:
+    """Create a vacancy for candidate recruitment tests. Returns the vacancy name."""
+    vacancy_data = generate_vacancy_data(
+        job_title="QA Lead",
+        hiring_manager=hiring_manager,
+        status=VacancyStatus.ACTIVE,
+    )
+
+    vacancy_list = SideMenuPage(logged_in_page).navigate_to_recruitment().navigate_to_vacancies()
+    add_vacancy_page = vacancy_list.click_add_vacancy()
+    add_vacancy_page.create_vacancy(vacancy_data)
+
+    vacancy_cleanup.append(vacancy_data.vacancy_name)
+
+    return vacancy_data.vacancy_name
+
+
+@pytest.fixture
+def candidate_list_page(logged_in_page: Page) -> CandidateListPage:
+    """Navigate to Recruitment Candidates and return its page object."""
+    return SideMenuPage(logged_in_page).navigate_to_recruitment().navigate_to_candidates()

@@ -32,3 +32,26 @@ class CreatedVacancy:
     job_title: str
     status: VacancyStatus
     page: Page
+
+
+class CandidateStatus(Enum):
+    APPLICATION_INITIATED = "Application Initiated"
+    SHORTLISTED = "Shortlisted"
+    REJECTED = "Rejected"
+
+
+@dataclass(frozen=True)
+class CandidateData:
+    first_name: str
+    last_name: str
+    email: str
+    vacancy_name: str
+
+
+@dataclass(frozen=True)
+class CreatedCandidate:
+    first_name: str
+    last_name: str
+    email: str
+    vacancy_name: str
+    page: Page

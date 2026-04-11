@@ -14,7 +14,7 @@ class CandidateListPage:
         self.add_button = page.get_by_role("button", name="Add")
         self.result_rows = page.locator(RESULT_ROW_SELECTOR)
         self.no_records_text = page.locator("span.oxd-text.oxd-text--span", has_text=NO_RECORDS_TEXT)
-        self.delete_confirmation_button = page.locator("button.oxd-button--label-danger")
+        self.delete_confirmation_button = page.get_by_role("button", name="Yes, Delete")
         self.wait_until_loaded()
 
     def wait_until_loaded(self) -> CandidateListPage:

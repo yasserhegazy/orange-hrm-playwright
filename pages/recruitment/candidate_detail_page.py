@@ -26,35 +26,29 @@ class CandidateDetailPage:
         return text.removeprefix(STATUS_PREFIX)
 
     @pw_trace("Shortlist Candidate")
-    def shortlist(self) -> CandidateDetailPage:
-        expect(self.shortlist_button).to_be_visible()
-        self.shortlist_button.click()
-
-        # Navigates to a separate action page — wait for it, then save
-        action_heading = self.page.get_by_role("heading", name="Shortlist Candidate")
-        expect(action_heading).to_be_visible(timeout=10000)
-
-        save_button = self.page.get_by_role("button", name="Save")
-        save_button.click()
-
-        # After save, redirects back to candidate detail page
-        expect(self.page).to_have_url(re.compile(r".*/addCandidate/\d+$"), timeout=10000)
-        expect(self.heading).to_be_visible(timeout=10000)
-        return self
+    def shortlist(self) -> "CandidateDetailPage":
+        return self._perform_action("Shortlist", "Shortlist Candidate")
 
     @pw_trace("Reject Candidate")
-    def reject(self) -> CandidateDetailPage:
-        expect(self.reject_button).to_be_visible()
-        self.reject_button.click()
+    def reject(self) -> "CandidateDetailPage":
+        return self._perform_action("Reject", "Reject Candidate")
 
-        # Navigates to a separate action page — wait for it, then save
-        action_heading = self.page.get_by_role("heading", name="Reject Candidate")
+    def _perform_action(self, button_name: str, transition_heading: str) -> "CandidateDetailPage":
+        """Helper to handle the navigation flow for recruitment actions."""
+        # Click the action button (Shortlist/Reject)
+        button = self.actions_container.get_by_role("button", name=button_name)
+        expect(button).to_be_visible()
+        button.click()
+
+        # Wait for the specific action page to load
+        action_heading = self.page.get_by_role("heading", name=transition_heading)
         expect(action_heading).to_be_visible(timeout=10000)
 
+        # Save the action
         save_button = self.page.get_by_role("button", name="Save")
         save_button.click()
 
-        # After save, redirects back to candidate detail page
+        # Verify redirect back to detail page
         expect(self.page).to_have_url(re.compile(r".*/addCandidate/\d+$"), timeout=10000)
         expect(self.heading).to_be_visible(timeout=10000)
         return self

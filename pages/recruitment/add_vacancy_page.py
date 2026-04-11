@@ -38,6 +38,7 @@ class AddVacancyPage:
             self.autocomplete_dropdown.locator(".oxd-autocomplete-option")
             .filter(has_not_text="Searching")
             .filter(has_not_text="No Records Found")
+            .filter(has_text=search_text)
             .first
         )
 

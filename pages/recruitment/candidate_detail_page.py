@@ -11,7 +11,7 @@ class CandidateDetailPage:
     def __init__(self, page: Page):
         self.page = page
         self.heading = page.get_by_role("heading", name="Application Stage")
-        self.status_label = page.locator("p.oxd-text--subtitle-2")
+        self.status_label = page.locator(".orangehrm-recruitment-status")
         self.shortlist_button = page.get_by_role("button", name="Shortlist")
         self.reject_button = page.get_by_role("button", name="Reject")
 

@@ -2,17 +2,11 @@ import allure
 import pytest
 from playwright.sync_api import Page
 
-from data.models import CreatedEmployee
-
 
 def _extract_page_from_test_args(funcargs: dict) -> Page | None:
     page = funcargs.get("page") or funcargs.get("logged_in_page")
     if page is not None:
         return page
-
-    created_employee = funcargs.get("created_employee")
-    if isinstance(created_employee, CreatedEmployee):
-        return created_employee.page
 
     return None
 

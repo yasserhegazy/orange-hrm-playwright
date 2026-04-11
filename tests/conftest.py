@@ -44,7 +44,7 @@ def created_employee(logged_in_page: Page) -> Generator[CreatedEmployee]:
 
 @pytest.fixture
 def hiring_manager(logged_in_page: Page) -> Generator[str]:
-    """Create an employee to serve as hiring manager, yield the name, and clean up after."""
+    """Create an employee via create_employee(), yield the first name for vacancy autocomplete, then clean up."""
     hiring_manager_employee = create_employee(logged_in_page)
     yield hiring_manager_employee.first_name
     try:
@@ -61,9 +61,10 @@ def employee_list_page(logged_in_page: Page) -> EmployeeListPage:
 
 
 @pytest.fixture
-def employee_list_page_with_employee(created_employee: CreatedEmployee) -> EmployeeListPage:
+def employee_list_page_with_employee(created_employee: CreatedEmployee, logged_in_page: Page) -> EmployeeListPage:
     """Navigate to PIM Employee List after creating an employee."""
-    return SideMenuPage(created_employee.page).navigate_to_pim().navigate_to_employee_list_page()
+    _ = created_employee  # fixture dependency ensures employee exists before navigating
+    return SideMenuPage(logged_in_page).navigate_to_pim().navigate_to_employee_list_page()
 
 
 @pytest.fixture

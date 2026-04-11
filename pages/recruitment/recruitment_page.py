@@ -1,5 +1,6 @@
 from playwright.sync_api import Page, expect
 
+from pages.recruitment.candidate_list_page import CandidateListPage
 from pages.recruitment.vacancy_list_page import VacancyListPage
 from utils.tracing import pw_trace
 
@@ -17,3 +18,9 @@ class RecruitmentPage:
         self.vacancies_tab.click()
 
         return VacancyListPage(self.page)
+
+    @pw_trace()
+    def navigate_to_candidates(self) -> CandidateListPage:
+        self.candidates_tab.click()
+
+        return CandidateListPage(self.page)

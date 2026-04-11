@@ -1,15 +1,12 @@
 from dataclasses import dataclass
 from enum import Enum
 
-from playwright.sync_api import Page
-
 
 @dataclass(frozen=True)
 class CreatedEmployee:
     first_name: str
     last_name: str
     employee_id: str
-    page: Page
 
 
 class VacancyStatus(Enum):
@@ -31,4 +28,17 @@ class CreatedVacancy:
     vacancy_name: str
     job_title: str
     status: VacancyStatus
-    page: Page
+
+
+class CandidateStatus(Enum):
+    APPLICATION_INITIATED = "Application Initiated"
+    SHORTLISTED = "Shortlisted"
+    REJECTED = "Rejected"
+
+
+@dataclass(frozen=True)
+class CandidateData:
+    first_name: str
+    last_name: str
+    email: str
+    vacancy_name: str

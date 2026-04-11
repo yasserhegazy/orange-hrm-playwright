@@ -1,6 +1,5 @@
-import time
-
 from data.models import VacancyData, VacancyStatus
+from tests.utils.faker_instance import fake
 
 
 def generate_vacancy_data(
@@ -9,9 +8,8 @@ def generate_vacancy_data(
     status: VacancyStatus = VacancyStatus.ACTIVE,
     num_positions: int = 1,
 ) -> VacancyData:
-    unique_seed = str(time.time_ns())
-    suffix = unique_seed[-6:]
-    vacancy_name = f"{job_title} - Test{suffix}"
+    unique_suffix = fake.pystr(min_chars=6, max_chars=6)
+    vacancy_name = f"{job_title} - {unique_suffix}"
 
     return VacancyData(
         job_title=job_title,

@@ -1,3 +1,5 @@
+import re
+
 from playwright.sync_api import Page, expect
 
 from pages.pim.employee_details_page import EmployeeDetailsPage
@@ -23,10 +25,15 @@ class AddEmployeePage:
     def fill_last_name(self, name: str) -> None:
         self.last_name_input.fill(name)
 
-    def add_employee(self, employee: dict[str, str]) -> EmployeeDetailsPage:
+    def fill_employee_id(self, employee_id: str) -> None:
+        employee_id_input = self.page.locator(".oxd-input-group", has_text="Employee Id").get_by_role("textbox")
+        employee_id_input.fill(employee_id)
+
+    def add_employee(self, employee: dict[str, str], employee_id: str) -> EmployeeDetailsPage:
         self.fill_first_name(employee["first_name"])
         self.fill_middle_name(employee["middle_name"])
         self.fill_last_name(employee["last_name"])
+        self.fill_employee_id(employee_id)
         return self.click_save()
 
     def toggle_login_details(self) -> None:
@@ -44,11 +51,12 @@ class AddEmployeePage:
         self.password_input.last.fill(password)
 
     def add_employee_with_login_details(
-        self, employee: dict[str, str], username: str, password: str
+        self, employee: dict[str, str], employee_id: str, username: str, password: str
     ) -> EmployeeDetailsPage:
         self.fill_first_name(employee["first_name"])
         self.fill_middle_name(employee["middle_name"])
         self.fill_last_name(employee["last_name"])
+        self.fill_employee_id(employee_id)
         self.toggle_login_details()
         self.fill_username(username)
         self.fill_password(password)
@@ -56,8 +64,8 @@ class AddEmployeePage:
         return self.click_save()
 
     def click_save(self) -> EmployeeDetailsPage:
-        with self.page.expect_navigation(url="**/pim/viewPersonalDetails/**"):
-            self.save_button.click()
+        self.save_button.click()
+        expect(self.page).to_have_url(re.compile(r".*/pim/viewPersonalDetails/empNumber/\d+$"), timeout=30000)
         return EmployeeDetailsPage(self.page)
 
     def get_employee_id(self) -> str:

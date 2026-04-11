@@ -26,14 +26,14 @@ class CandidateDetailPage:
         return text.removeprefix(STATUS_PREFIX)
 
     @pw_trace("Shortlist Candidate")
-    def shortlist(self) -> "CandidateDetailPage":
+    def shortlist(self) -> CandidateDetailPage:
         return self._perform_action("Shortlist", "Shortlist Candidate")
 
     @pw_trace("Reject Candidate")
-    def reject(self) -> "CandidateDetailPage":
+    def reject(self) -> CandidateDetailPage:
         return self._perform_action("Reject", "Reject Candidate")
 
-    def _perform_action(self, button_name: str, transition_heading: str) -> "CandidateDetailPage":
+    def _perform_action(self, button_name: str, transition_heading: str) -> CandidateDetailPage:
         """Helper to handle the navigation flow for recruitment actions."""
         # Click the action button (Shortlist/Reject)
         button = self.actions_container.get_by_role("button", name=button_name)

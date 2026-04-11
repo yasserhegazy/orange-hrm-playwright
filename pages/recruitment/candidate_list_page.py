@@ -33,18 +33,14 @@ class CandidateListPage:
         return self.result_rows.count()
 
     @pw_trace("Delete Candidate by Name")
-    def delete_candidate_by_name(self, candidate_name: str) -> bool:
-          target_row = self.page.locator(".oxd-table-row").filter(
-                  has_text=candidate_name
-              ).filter(
-                  has_text=vacancy_name
-              )
-          
-              # 2. Within that row, find the trash icon button and click it
-              # The trash icon has the class 'bi-trash'
-              trash_button = target_row.locator(".bi-trash").locator("..") 
-              
-              trash_button.click()
+    def delete_candidate_by_name(self, candidate_name: str, vacancy_name: str) -> bool:
+        target_row = self.page.locator(".oxd-table-row").filter(has_text=candidate_name).filter(has_text=vacancy_name)
+
+        # 2. Within that row, find the trash icon button and click it
+        # The trash icon has the class 'bi-trash'
+        trash_button = target_row.locator(".bi-trash").locator("..")
+
+        trash_button.click()
 
         expect(self.delete_confirmation_button).to_be_visible()
         self.delete_confirmation_button.click()

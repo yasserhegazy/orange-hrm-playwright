@@ -1,8 +1,7 @@
-from playwright.sync_api import Page, expect
+from playwright.sync_api import Page
 
-from data.models import CandidateStatus
+from data.models import CandidateData, CandidateStatus
 from pages.navigation.side_menu_page import SideMenuPage
-from pages.recruitment.candidate_detail_page import STATUS_PREFIX
 from tests.utils.generate_candidate_data import generate_candidate_data
 
 
@@ -11,11 +10,10 @@ class TestCandidateWorkflow:
         self,
         logged_in_page: Page,
         vacancy_for_recruitment: str,
-        candidate_cleanup: list[str],
+        candidate_cleanup: list[CandidateData],
     ):
         candidate_data = generate_candidate_data(vacancy_name=vacancy_for_recruitment)
-        candidate_full_name = f"{candidate_data.first_name} {candidate_data.last_name}"
-        candidate_cleanup.append(candidate_full_name)
+        candidate_cleanup.append(candidate_data)
 
         # Navigate to Recruitment → Candidates → Add Candidate
         candidate_list = SideMenuPage(logged_in_page).navigate_to_recruitment().navigate_to_candidates()
@@ -23,24 +21,20 @@ class TestCandidateWorkflow:
 
         # Add candidate and verify initial status
         candidate_detail = add_candidate_page.add_candidate(candidate_data)
-        candidate_detail.wait_until_loaded()
-        expect(candidate_detail.status_label).to_have_text(
-            f"{STATUS_PREFIX}{CandidateStatus.APPLICATION_INITIATED.value}"
-        )
+        assert candidate_detail.get_status() == CandidateStatus.APPLICATION_INITIATED.value
 
         # Reject the candidate and verify final status
         candidate_detail.reject()
-        expect(candidate_detail.status_label).to_have_text(f"{STATUS_PREFIX}{CandidateStatus.REJECTED.value}")
+        assert candidate_detail.get_status() == CandidateStatus.REJECTED.value
 
     def test_add_candidate_and_shortlist(
         self,
         logged_in_page: Page,
         vacancy_for_recruitment: str,
-        candidate_cleanup: list[str],
+        candidate_cleanup: list[CandidateData],
     ):
         candidate_data = generate_candidate_data(vacancy_name=vacancy_for_recruitment)
-        candidate_full_name = f"{candidate_data.first_name} {candidate_data.last_name}"
-        candidate_cleanup.append(candidate_full_name)
+        candidate_cleanup.append(candidate_data)
 
         # Navigate to Recruitment → Candidates → Add Candidate
         candidate_list = SideMenuPage(logged_in_page).navigate_to_recruitment().navigate_to_candidates()
@@ -48,11 +42,8 @@ class TestCandidateWorkflow:
 
         # Add candidate and verify initial status
         candidate_detail = add_candidate_page.add_candidate(candidate_data)
-        candidate_detail.wait_until_loaded()
-        expect(candidate_detail.status_label).to_have_text(
-            f"{STATUS_PREFIX}{CandidateStatus.APPLICATION_INITIATED.value}"
-        )
+        assert candidate_detail.get_status() == CandidateStatus.APPLICATION_INITIATED.value
 
         # Shortlist the candidate and verify final status
         candidate_detail.shortlist()
-        expect(candidate_detail.status_label).to_have_text(f"{STATUS_PREFIX}{CandidateStatus.SHORTLISTED.value}")
+        assert candidate_detail.get_status() == CandidateStatus.SHORTLISTED.value

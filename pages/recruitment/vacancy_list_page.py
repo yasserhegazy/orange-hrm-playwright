@@ -39,11 +39,7 @@ class VacancyListPage:
         Waits for the vacancy to appear before returning.
         """
         vacancy_row = self.result_rows.filter(has_text=vacancy_name)
-        try:
-            expect(vacancy_row.first).to_be_visible(timeout=timeout)
-            return True
-        except AssertionError:
-            return False
+        return vacancy_row.first.is_visible(timeout=timeout)
 
     @pw_trace("Delete Vacancy by Name")
     def delete_vacancy_by_name(self, vacancy_name: str) -> bool:

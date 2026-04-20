@@ -1,4 +1,5 @@
 import re
+from pathlib import Path
 
 from playwright.sync_api import Page, expect
 
@@ -16,6 +17,7 @@ class AddCandidatePage:
         self.last_name_input = page.get_by_placeholder("Last Name")
         self.email_input = page.locator(".oxd-input-group", has_text="Email").get_by_role("textbox").first
         self.vacancy_dropdown = page.locator(".oxd-input-group", has_text="Vacancy").locator(".oxd-select-text")
+        self.resume_input = page.locator("input[type='file']").first
         self.save_button = page.get_by_role("button", name="Save")
         expect(self.header).to_be_visible()
 
@@ -34,6 +36,10 @@ class AddCandidatePage:
         expect(option).to_be_visible()
         option.click()
 
+    def upload_resume(self, file_path: Path) -> None:
+        """Upload a résumé file via the hidden file input."""
+        self.resume_input.set_input_files(str(file_path))
+
     def click_save(self) -> CandidateDetailPage:
         self.save_button.click()
         expect(self.page).to_have_url(re.compile(r".*/addCandidate/\d+$"), timeout=10000)
@@ -45,4 +51,6 @@ class AddCandidatePage:
         self.fill_last_name(candidate_data.last_name)
         self.fill_email(candidate_data.email)
         self.select_vacancy(candidate_data.vacancy_name)
+        if candidate_data.resume is not None:
+            self.upload_resume(candidate_data.resume)
         return self.click_save()

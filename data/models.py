@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from enum import Enum
+from pathlib import Path
 
 
 @dataclass(frozen=True)
@@ -8,6 +9,7 @@ class CreatedEmployee:
     last_name: str
     employee_id: str
     emp_number: str | None = None
+    username: str | None = None
 
 
 class VacancyStatus(Enum):
@@ -45,6 +47,7 @@ class CandidateData:
     email: str
     vacancy_name: str
     candidate_id: str | None = None
+    resume: Path | None = None
 
 
 @dataclass(frozen=True)

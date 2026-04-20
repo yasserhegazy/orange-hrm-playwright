@@ -63,3 +63,16 @@ def _resolve_searchable_employee_id(page: Page, emp_number: str) -> str:
 
     # Fallback keeps fixture usable even if response shape changes.
     return emp_number
+
+
+def find_emp_number_by_employee_id(page: Page, employee_id: str) -> str | None:
+    """Look up an employee's internal empNumber using their display employeeId."""
+    response = page.request.get(
+        url=EMPLOYEES_ENDPOINT,
+        params={"employeeId": employee_id},
+    )
+    payload = _parse_json(response, f"search employee by employeeId '{employee_id}'")
+    data = _extract_data(payload)
+    if isinstance(data, list) and data:
+        return _extract_id(data[0], ("empNumber", "id"), "employee search result")
+    return None

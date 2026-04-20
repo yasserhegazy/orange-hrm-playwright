@@ -3,7 +3,7 @@ from collections.abc import Generator
 import pytest
 from playwright.sync_api import Page
 
-from tests.plugins.recruitment_api import delete_vacancy_using_api, find_vacancy_id_by_name
+from tests.plugins.vacancy_api import delete_vacancy_using_api, find_vacancy_id_by_name
 
 
 @pytest.fixture

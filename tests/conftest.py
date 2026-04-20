@@ -8,15 +8,10 @@ from pages.navigation.side_menu_page import SideMenuPage
 from pages.pim.employee_list_page import EmployeeListPage
 from pages.recruitment.candidate_list_page import CandidateListPage
 from pages.recruitment.vacancy_list_page import VacancyListPage
+from tests.plugins.candidate_api import create_candidate_using_api, delete_candidate_using_api
 from tests.plugins.employee import login_as_admin
-from tests.plugins.recruitment_api import (
-    create_candidate_using_api,
-    create_employee_using_api,
-    create_vacancy_using_api,
-    delete_candidate_using_api,
-    delete_employee_using_api,
-    delete_vacancy_using_api,
-)
+from tests.plugins.employee_api import create_employee_using_api, delete_employee_using_api
+from tests.plugins.vacancy_api import create_vacancy_using_api, delete_vacancy_using_api
 from tests.utils.generate_candidate_data import generate_candidate_data
 from tests.utils.generate_vacancy_data import generate_vacancy_data
 

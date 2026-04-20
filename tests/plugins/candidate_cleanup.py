@@ -4,7 +4,7 @@ import pytest
 from playwright.sync_api import Page
 
 from data.models import CandidateData
-from tests.plugins.recruitment_api import delete_candidate_using_api, find_candidate_id
+from tests.plugins.candidate_api import delete_candidate_using_api, find_candidate_id
 
 
 @pytest.fixture

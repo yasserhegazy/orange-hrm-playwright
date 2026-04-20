@@ -1,6 +1,6 @@
 from playwright.sync_api import Page
 
-from data.models import CandidateData, CandidateStatus
+from data.models import CandidateData, CandidateStatus, CreatedVacancy
 from pages.navigation.side_menu_page import SideMenuPage
 from tests.utils.generate_candidate_data import generate_candidate_data
 
@@ -9,10 +9,10 @@ class TestCandidateWorkflow:
     def test_add_candidate_and_reject(
         self,
         logged_in_page: Page,
-        vacancy_for_recruitment: str,
+        create_vacancy_api: CreatedVacancy,
         candidate_cleanup: list[CandidateData],
     ):
-        candidate_data = generate_candidate_data(vacancy_name=vacancy_for_recruitment)
+        candidate_data = generate_candidate_data(vacancy_name=create_vacancy_api.vacancy_name)
         candidate_cleanup.append(candidate_data)
 
         # Navigate to Recruitment → Candidates → Add Candidate
@@ -30,10 +30,10 @@ class TestCandidateWorkflow:
     def test_add_candidate_and_shortlist(
         self,
         logged_in_page: Page,
-        vacancy_for_recruitment: str,
+        create_vacancy_api: CreatedVacancy,
         candidate_cleanup: list[CandidateData],
     ):
-        candidate_data = generate_candidate_data(vacancy_name=vacancy_for_recruitment)
+        candidate_data = generate_candidate_data(vacancy_name=create_vacancy_api.vacancy_name)
         candidate_cleanup.append(candidate_data)
 
         # Navigate to Recruitment → Candidates → Add Candidate

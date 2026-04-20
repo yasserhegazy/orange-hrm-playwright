@@ -4,7 +4,6 @@ from data.constants import LOGIN_PASSWORD, VALID_PASSWORD, VALID_USERNAME
 from data.models import CreatedEmployee
 from pages.auth.login_page import LoginPage
 from pages.navigation.side_menu_page import SideMenuPage
-from tests.plugins.recruitment_api import create_employee_using_api as create_employee_via_api
 from tests.utils.faker_instance import fake
 from tests.utils.generate_employee_data import generate_employee_data
 
@@ -47,9 +46,5 @@ def add_employee_with_login_details(page: Page) -> CreatedEmployee:
         first_name=employee["first_name"],
         last_name=employee["last_name"],
         employee_id=employee_id,
+        username=login_username,  # carry credentials so fixtures can log in as this employee
     )
-
-
-def create_employee_using_api(page: Page, employee_data: dict[str, str] | None = None) -> CreatedEmployee:
-    """Create an employee via API and return its key details."""
-    return create_employee_via_api(page, employee_data)

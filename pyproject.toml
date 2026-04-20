@@ -22,8 +22,7 @@ dev = [
 ]
 
 [tool.pytest.ini_options]
-addopts = "--alluredir=allure-results"
-base_url = "https://opensource-demo.orangehrmlive.com/"
+addopts = "--alluredir=allure-results --base-url=https://opensource-demo.orangehrmlive.com/"
 
 [tool.ruff]
 line-length = 120

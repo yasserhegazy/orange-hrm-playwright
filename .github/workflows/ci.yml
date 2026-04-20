@@ -7,7 +7,8 @@ on:
     branches: [main]
 
 jobs:
-  ci:
+  lint:
+    name: Lint
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -21,16 +22,42 @@ jobs:
         run: pip install uv
 
       - name: Install dependencies
-        run: uv sync 
+        run: uv sync
 
       - name: Run ruff check
-        run: uv run ruff check 
+        run: uv run ruff check
 
       - name: Run ruff format check
-        run: uv run ruff format --check 
+        run: uv run ruff format --check
+
+  test:
+    name: Tests
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.14
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+
+      - name: Install uv
+        run: pip install uv
+
+      - name: Install dependencies
+        run: uv sync
 
       - name: Install Playwright browsers
-        run: uv run playwright install
+        run: uv run playwright install --with-deps chromium
 
-      - name: Run tests
-        run: uv run pytest
+      - name: Run tests in parallel
+        run: uv run pytest tests/e2e --numprocesses auto --alluredir=allure-results
+
+      - name: Upload Allure results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-results
+          path: allure-results/
+

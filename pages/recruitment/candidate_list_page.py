@@ -39,20 +39,5 @@ class CandidateListPage:
         full_name = f"{first_name} {last_name}"
         row = self.result_rows.filter(has_text=full_name).first
         expect(row).to_be_visible(timeout=10000)
-        row.get_by_role("link").click()
+        row.locator("button i.bi-eye-fill").click()
         return CandidateDetailPage(self.page)
-
-    @pw_trace("Delete Candidate by Name")
-    def delete_candidate_by_name(self, candidate_name: str, vacancy_name: str) -> bool:
-        target_row = self.result_rows.filter(has_text=candidate_name).filter(has_text=vacancy_name)
-        if target_row.count() == 0:
-            return False
-
-        delete_button = target_row.first.locator("button i.bi-trash")
-        expect(delete_button).to_be_visible()
-        delete_button.click()
-
-        expect(self.delete_confirmation_button).to_be_visible()
-        self.delete_confirmation_button.click()
-
-        return True

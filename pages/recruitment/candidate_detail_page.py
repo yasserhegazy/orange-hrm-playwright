@@ -30,7 +30,11 @@ class CandidateDetailPage:
 
     def has_attachment(self, filename: str) -> bool:
         """Return True if the given filename is visible in the attachments section."""
-        return self.page.get_by_text(filename, exact=True).is_visible()
+        try:
+            expect(self.page.get_by_text(filename)).to_be_visible(timeout=5000)
+            return True
+        except AssertionError:
+            return False
 
     @pw_trace("Shortlist Candidate")
     def shortlist(self) -> CandidateDetailPage:

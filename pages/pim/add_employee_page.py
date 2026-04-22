@@ -2,6 +2,7 @@ import re
 
 from playwright.sync_api import Page, expect
 
+from data.models import EmployeeData
 from pages.pim.employee_details_page import EmployeeDetailsPage
 
 
@@ -29,11 +30,11 @@ class AddEmployeePage:
         employee_id_input = self.page.locator(".oxd-input-group", has_text="Employee Id").get_by_role("textbox")
         employee_id_input.fill(employee_id)
 
-    def add_employee(self, employee: dict[str, str], employee_id: str) -> EmployeeDetailsPage:
-        self.fill_first_name(employee["first_name"])
-        self.fill_middle_name(employee["middle_name"])
-        self.fill_last_name(employee["last_name"])
-        self.fill_employee_id(employee_id)
+    def add_employee(self, employee: EmployeeData) -> EmployeeDetailsPage:
+        self.fill_first_name(employee.first_name)
+        self.fill_middle_name(employee.middle_name)
+        self.fill_last_name(employee.last_name)
+        self.fill_employee_id(employee.employee_id)
         return self.click_save()
 
     def toggle_login_details(self) -> None:
@@ -51,12 +52,12 @@ class AddEmployeePage:
         self.password_input.last.fill(password)
 
     def add_employee_with_login_details(
-        self, employee: dict[str, str], employee_id: str, username: str, password: str
+        self, employee: EmployeeData, username: str, password: str
     ) -> EmployeeDetailsPage:
-        self.fill_first_name(employee["first_name"])
-        self.fill_middle_name(employee["middle_name"])
-        self.fill_last_name(employee["last_name"])
-        self.fill_employee_id(employee_id)
+        self.fill_first_name(employee.first_name)
+        self.fill_middle_name(employee.middle_name)
+        self.fill_last_name(employee.last_name)
+        self.fill_employee_id(employee.employee_id)
         self.toggle_login_details()
         self.fill_username(username)
         self.fill_password(password)

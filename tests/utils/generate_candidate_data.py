@@ -3,7 +3,9 @@ from pathlib import Path
 from data.models import CandidateData
 from tests.utils.faker_instance import fake
 
-_UPLOADS_DIR = Path(__file__).parents[2] / "data" / "uploads"
+# Anchor to the project root / data / uploads
+_PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
+_UPLOADS_DIR = _PROJECT_ROOT / "data" / "uploads"
 
 
 def generate_candidate_data(

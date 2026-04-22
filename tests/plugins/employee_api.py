@@ -2,23 +2,23 @@
 
 from playwright.sync_api import Page
 
-from data.models import CreatedEmployee
+from data.models import CreatedEmployee, EmployeeData
 from tests.plugins.api_helpers import _extract_data, _extract_id, _parse_json, _response_text
 from tests.utils.generate_employee_data import generate_employee_data
 
 EMPLOYEES_ENDPOINT = "/web/index.php/api/v2/pim/employees"
 
 
-def create_employee_using_api(page: Page, employee_data: dict[str, str] | None = None) -> CreatedEmployee:
+def create_employee_using_api(page: Page, employee_data: EmployeeData | None = None) -> CreatedEmployee:
     employee = employee_data or generate_employee_data()
-    employee_id = employee.get("employee_id", "")
+    employee_id = employee.employee_id
 
     response = page.request.post(
         url=EMPLOYEES_ENDPOINT,
         data={
-            "firstName": employee["first_name"],
-            "middleName": employee["middle_name"],
-            "lastName": employee["last_name"],
+            "firstName": employee.first_name,
+            "middleName": employee.middle_name,
+            "lastName": employee.last_name,
             "empPicture": None,
             "employeeId": employee_id,
         },
@@ -35,8 +35,8 @@ def create_employee_using_api(page: Page, employee_data: dict[str, str] | None =
     )
 
     return CreatedEmployee(
-        first_name=employee["first_name"],
-        last_name=employee["last_name"],
+        first_name=employee.first_name,
+        last_name=employee.last_name,
         employee_id=resolved_employee_id,
         emp_number=emp_number,
     )

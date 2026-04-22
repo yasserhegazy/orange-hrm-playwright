@@ -1,16 +1,21 @@
 from collections.abc import Generator
 
 import pytest
-from playwright.sync_api import Page
+from playwright.sync_api import Browser, Page
 
-from data.models import CandidateData, CreatedEmployee, CreatedVacancy, VacancyStatus
+from data.constants import LOGIN_PASSWORD
+from data.models import CreatedCandidate, CreatedEmployee, CreatedVacancy, VacancyStatus
 from pages.navigation.side_menu_page import SideMenuPage
 from pages.pim.employee_list_page import EmployeeListPage
 from pages.recruitment.candidate_list_page import CandidateListPage
 from pages.recruitment.vacancy_list_page import VacancyListPage
 from tests.plugins.candidate_api import create_candidate_using_api, delete_candidate_using_api
-from tests.plugins.employee import login_as_admin
-from tests.plugins.employee_api import create_employee_using_api, delete_employee_using_api
+from tests.plugins.employee import add_employee_with_login_details, login_as_admin
+from tests.plugins.employee_api import (
+    create_employee_using_api,
+    delete_employee_using_api,
+    find_emp_number_by_employee_id,
+)
 from tests.plugins.vacancy_api import create_vacancy_using_api, delete_vacancy_using_api
 from tests.utils.generate_candidate_data import generate_candidate_data
 from tests.utils.generate_vacancy_data import generate_vacancy_data
@@ -40,13 +45,68 @@ def create_employee_api(logged_in_page: Page, request: pytest.FixtureRequest) ->
     employee_data = getattr(request, "param", None)
     employee = create_employee_using_api(logged_in_page, employee_data=employee_data)
     yield employee
-    delete_employee_using_api(logged_in_page, employee.emp_number or employee.employee_id)
+    try:
+        delete_employee_using_api(logged_in_page, employee.emp_number or employee.employee_id)
+    except AssertionError:
+        pass
 
 
 @pytest.fixture
 def created_employee(create_employee_api: CreatedEmployee) -> CreatedEmployee:
     """Backward-compatible alias for API-created employee fixture."""
     return create_employee_api
+
+
+@pytest.fixture
+def create_hiring_manager(logged_in_page: Page) -> Generator[CreatedEmployee]:
+    """Create an employee with login details to act as a Hiring Manager."""
+    hm = add_employee_with_login_details(logged_in_page)
+    yield hm
+    try:
+        delete_employee_using_api(logged_in_page, hm.emp_number or hm.employee_id)
+    except AssertionError:
+        pass
+
+
+@pytest.fixture
+def hiring_manager_page(browser: Browser, create_hiring_manager: CreatedEmployee, base_url: str) -> Generator[Page]:
+    """Provide an isolated session logged in as the hiring manager."""
+    context = browser.new_context()
+    hm_page = context.new_page()
+    hm_page.goto(base_url, wait_until="domcontentloaded", timeout=60000)
+    from pages.auth.login_page import LoginPage  # lazy import
+
+    LoginPage(hm_page).login(create_hiring_manager.username, LOGIN_PASSWORD)
+    yield hm_page
+    context.close()
+
+
+@pytest.fixture
+def create_vacancy_api_for_hm(
+    logged_in_page: Page,
+    create_hiring_manager: CreatedEmployee,
+) -> Generator[CreatedVacancy]:
+    """Create a vacancy assigned to the hiring manager via API."""
+    vacancy_data = generate_vacancy_data(
+        job_title="QA Lead",
+        hiring_manager=create_hiring_manager.first_name,
+        status=VacancyStatus.ACTIVE,
+    )
+
+    hm_emp_number = create_hiring_manager.emp_number or find_emp_number_by_employee_id(
+        logged_in_page, create_hiring_manager.employee_id
+    )
+
+    created_vacancy = create_vacancy_using_api(
+        logged_in_page,
+        vacancy_data=vacancy_data,
+        hiring_manager_employee_id=hm_emp_number or create_hiring_manager.employee_id,
+    )
+    yield created_vacancy
+    try:
+        delete_vacancy_using_api(logged_in_page, created_vacancy.vacancy_id)
+    except AssertionError:
+        pass
 
 
 @pytest.fixture
@@ -62,9 +122,8 @@ def employee_list_page(logged_in_page: Page) -> EmployeeListPage:
 
 
 @pytest.fixture
-def employee_list_page_with_employee(created_employee: CreatedEmployee, logged_in_page: Page) -> EmployeeListPage:
+def employee_list_page_with_employee(create_employee_api: CreatedEmployee, logged_in_page: Page) -> EmployeeListPage:
     """Navigate to PIM Employee List after creating an employee."""
-    _ = created_employee
     return SideMenuPage(logged_in_page).navigate_to_pim().navigate_to_employee_list_page()
 
 
@@ -113,7 +172,7 @@ def create_candidate_api(
     logged_in_page: Page,
     create_vacancy_api: CreatedVacancy,
     request: pytest.FixtureRequest,
-) -> Generator[CandidateData]:
+) -> Generator[CreatedCandidate]:
     """Create a candidate via API and yield candidate data with candidate_id."""
     candidate_data = getattr(request, "param", None) or generate_candidate_data(
         vacancy_name=create_vacancy_api.vacancy_name,
@@ -125,12 +184,6 @@ def create_candidate_api(
         vacancy_id=create_vacancy_api.vacancy_id,
     )
 
-    yield CandidateData(
-        first_name=created_candidate.first_name,
-        last_name=created_candidate.last_name,
-        email=created_candidate.email,
-        vacancy_name=created_candidate.vacancy_name,
-        candidate_id=created_candidate.candidate_id,
-    )
+    yield created_candidate
 
     delete_candidate_using_api(logged_in_page, created_candidate.candidate_id)

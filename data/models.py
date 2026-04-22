@@ -4,6 +4,14 @@ from pathlib import Path
 
 
 @dataclass(frozen=True)
+class EmployeeData:
+    first_name: str
+    middle_name: str
+    last_name: str
+    employee_id: str
+
+
+@dataclass(frozen=True)
 class CreatedEmployee:
     first_name: str
     last_name: str

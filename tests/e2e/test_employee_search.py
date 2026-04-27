@@ -14,12 +14,12 @@ class TestEmployeeSearchByName:
     )
     def test_search_by_valid_name(
         self,
-        created_employee: CreatedEmployee,
+        create_employee_api: CreatedEmployee,
         employee_list_page_with_employee: EmployeeListPage,
         name_key: str,
     ):
         """Positive: searching by existing first/last name returns results."""
-        expected_value = getattr(created_employee, name_key)
+        expected_value = getattr(create_employee_api, name_key)
         employee_list_page_with_employee.search_by_name(expected_value)
         assert employee_list_page_with_employee.get_result_count() > 0
         assert employee_list_page_with_employee.has_result_row(expected_value)
@@ -44,13 +44,13 @@ class TestEmployeeSearchById:
 
     def test_search_by_valid_id(
         self,
-        created_employee: CreatedEmployee,
+        create_employee_api: CreatedEmployee,
         employee_list_page_with_employee: EmployeeListPage,
     ):
         """Positive: existing employee ID returns exactly 1 result."""
-        employee_list_page_with_employee.search_by_id(created_employee.employee_id)
+        employee_list_page_with_employee.search_by_id(create_employee_api.employee_id)
         assert employee_list_page_with_employee.get_result_count() == 1
-        assert employee_list_page_with_employee.has_result_row(created_employee.employee_id)
+        assert employee_list_page_with_employee.has_result_row(create_employee_api.employee_id)
 
     @pytest.mark.parametrize(
         "invalid_id",

@@ -10,6 +10,7 @@ dependencies = [
     "playwright>=1.58.0",
     "pytest-base-url>=2.1.0",
     "pytest-playwright>=0.7.2",
+    "pytest-xdist>=3.6.1",
     "ruff>=0.15.6",
 ]
 
@@ -21,8 +22,7 @@ dev = [
 ]
 
 [tool.pytest.ini_options]
-addopts = "--alluredir=allure-results"
-base_url = "https://opensource-demo.orangehrmlive.com/"
+addopts = "--alluredir=allure-results --base-url=https://opensource-demo.orangehrmlive.com/"
 
 [tool.ruff]
 line-length = 120

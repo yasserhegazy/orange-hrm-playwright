@@ -19,13 +19,12 @@ def create_employee(page: Page) -> CreatedEmployee:
     add_employee_page = SideMenuPage(page).navigate_to_pim().click_add_employee()
 
     employee = generate_employee_data()
-    employee_id = fake.unique.numerify(text="9#####")
-    add_employee_page.add_employee(employee, employee_id=employee_id)
+    add_employee_page.add_employee(employee)
 
     return CreatedEmployee(
-        first_name=employee["first_name"],
-        last_name=employee["last_name"],
-        employee_id=employee_id,
+        first_name=employee.first_name,
+        last_name=employee.last_name,
+        employee_id=employee.employee_id,
     )
 
 
@@ -33,17 +32,16 @@ def add_employee_with_login_details(page: Page) -> CreatedEmployee:
     add_employee_page = SideMenuPage(page).navigate_to_pim().click_add_employee()
 
     employee = generate_employee_data()
-    employee_id = fake.unique.numerify(text="9#####")
     login_username = fake.unique.bothify(text="emp_########")
     add_employee_page.add_employee_with_login_details(
         employee,
-        employee_id=employee_id,
         username=login_username,
         password=LOGIN_PASSWORD,
     )
 
     return CreatedEmployee(
-        first_name=employee["first_name"],
-        last_name=employee["last_name"],
-        employee_id=employee_id,
+        first_name=employee.first_name,
+        last_name=employee.last_name,
+        employee_id=employee.employee_id,
+        username=login_username,  # carry credentials so fixtures can log in as this employee
     )

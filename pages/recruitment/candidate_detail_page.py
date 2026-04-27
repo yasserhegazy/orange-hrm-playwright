@@ -28,6 +28,14 @@ class CandidateDetailPage:
         text = self.status_label.inner_text().strip()
         return text.removeprefix(STATUS_PREFIX).strip()
 
+    def has_attachment(self, filename: str) -> bool:
+        """Return True if the given filename is visible in the attachments section."""
+        try:
+            expect(self.page.get_by_text(filename)).to_be_visible(timeout=5000)
+            return True
+        except AssertionError:
+            return False
+
     @pw_trace("Shortlist Candidate")
     def shortlist(self) -> CandidateDetailPage:
         return self._perform_action(self.shortlist_button, "Shortlist Candidate")
